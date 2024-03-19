@@ -70,6 +70,8 @@ namespace GigaChad_Corp_Usermanager {
             return table;
         }
 
+
+
         public static long GetDataTableSizeInBytes(DataTable dataTable) {
             #pragma warning disable SYSLIB0011
             long sizeInBytes = 0;

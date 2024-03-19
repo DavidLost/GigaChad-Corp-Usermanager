@@ -70,8 +70,11 @@ namespace GigaChad_Corp_Usermanager {
             int selectedMenuIndex = MenuTabPanel.SelectedIndex;
             string tableName = tables[selectedMenuIndex];
             string query = $"SELECT * FROM {tableName} WHERE ";
+            string[] ignoredColumns = []; //"id" Add columns that should be excluded from the search
             for (int i = 0; i < tablesColumns[tableName].Count; i++) {
-                query += $"{tablesColumns[tableName][i]} LIKE '{searchString}'";
+                string column = tablesColumns[tableName][i];
+                if (ignoredColumns.Contains(column)) continue;
+                query += $"{column} LIKE '{searchString}'";
                 if (i < tablesColumns[tableName].Count - 1) {
                     query += " OR ";
                 }
