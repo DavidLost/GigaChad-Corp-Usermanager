@@ -100,16 +100,16 @@ namespace GigaChad_Corp_Usermanager {
             Trace.WriteLine(EmployeeSearchModeBox.SelectedValue);
             Trace.WriteLine($"Event args: {e}");
             Trace.WriteLine($"Text changed: {searchBox.Name} - {searchBox.Text}");
-            var searchString = EmployeeSearchBox.Text.Replace('*', '%');
-            string query = "SELECT * FROM employee WHERE ";
-            for (int i = 0; i < tablesColumns["employee"].Count; i++) {
-                query += $"{tablesColumns["employee"][i]} LIKE '{searchString}'";
-                if (i < tablesColumns["employee"].Count - 1) {
-                    query += " OR ";
-                }
-            }
-            Trace.WriteLine(query);
-            GetTableData(query);
+            //var searchString = EmployeeSearchBox.Text.Replace('*', '%');
+            //string query = "SELECT * FROM employee WHERE ";
+            //for (int i = 0; i < tablesColumns["employee"].Count; i++) {
+            //    query += $"{tablesColumns["employee"][i]} LIKE '{searchString}'";
+            //    if (i < tablesColumns["employee"].Count - 1) {
+            //        query += " OR ";
+            //    }
+            //}
+            //Trace.WriteLine(query);
+            //GetTableData(query);
         }
         //private void PrintTableColumns() {
         //    foreach (var table in tablesColumns) {
