@@ -69,15 +69,18 @@ namespace GigaChad_Corp_Usermanager {
             Trace.WriteLine($"INFO - Table was sucessfully loaded in {LastExecutionTimeMS}ms");
             return table;
         }
-        //public static long GetDataTableSizeInBytes(DataTable dataTable) {
-        //    long sizeInBytes = 0;
-        //    var binaryFormatter = new BinaryFormatter();
-        //    using (var ms = new MemoryStream()) {
-        //        binaryFormatter.Serialize(ms, dataTable);
-        //        sizeInBytes = ms.Length;
-        //    }
-        //    return sizeInBytes;
-        //}
+
+        public static long GetDataTableSizeInBytes(DataTable dataTable) {
+            #pragma warning disable SYSLIB0011
+            long sizeInBytes = 0;
+            var binaryFormatter = new BinaryFormatter();
+            using (var ms = new MemoryStream()) {
+                binaryFormatter.Serialize(ms, dataTable);
+                sizeInBytes = ms.Length;
+            }
+            #pragma warning restore SYSLIB0011
+            return sizeInBytes;
+        }
     }
 
 }

@@ -6,30 +6,56 @@
         xmlns:local="clr-namespace:GigaChad_Corp_Usermanager"
         mc:Ignorable="d"
         Title="GigaChad Corp Managing Tool" Height="600" Width="900">
-    <Grid x:Name="MainGrid" Margin="15,15,15,15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TableMenu" Margin="5,10,5,10">
+    <Grid x:Name="MainGrid" Margin="15">
+        <TabControl Grid.Row="0" Grid.Column="0" x:Name="TableMenu" Margin="5,10">
+            <!-- Employee Tab -->
             <TabItem x:Name="EmployeeMenu" Header="Mitarbeiter">
-                
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="EmployeeSearchBox" TextChanged="SearchBox_TextChanged" Margin="5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="EmployeeSearchModeBox" Margin="5,0,5,5" Width="150"/>
+                    <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="EmployeeResultDataGrid" Margin="0,5,0,0"/>
+                </Grid>
             </TabItem>
+            <!-- Department Tab -->
             <TabItem x:Name="DepartmentMenu" Header="Abteilungen">
-                
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="DepartmentSearchBox" Margin="5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="DepartmentSearchModeBox" Margin="5,0,5,5" Width="150"/>
+                    <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DepartmentResultDataGrid" Margin="0,5,0,0"/>
+                </Grid>
             </TabItem>
+            <!-- Project Tab -->
             <TabItem x:Name="ProjectMenu" Header="Projekte">
-                
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="ProjectSearchBox" Margin="5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ProjectSearchModeBox" Margin="5,0,5,5" Width="150"/>
+                    <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ProjectResultDataGrid" Margin="0,5,0,0"/>
+                </Grid>
             </TabItem>
         </TabControl>
-        <TextBox Grid.Row="1" Grid.Column="0" x:Name="SearchBox" TextChanged="SearchBox_TextChanged">
-            
-        </TextBox>
-        <DataGrid Grid.Row="2" x:Name="ResultDataGrid" d:ItemsSource="{d:SampleData ItemCount=2}"/>
     </Grid>
 </Window>
