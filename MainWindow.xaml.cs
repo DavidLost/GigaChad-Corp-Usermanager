@@ -11,8 +11,7 @@ namespace GigaChad_Corp_Usermanager {
 
         private DBConnector dbConnector;
         private readonly string databaseName = "gigachadcorp";
-        private readonly string[] tables = ["employee", "project", "department"];
-
+        private readonly string[] tables = ["employee", "department", "project"];
         private readonly Dictionary<string, List<string>> tablesColumns = [];
 
         public MainWindow() {
@@ -39,7 +38,6 @@ namespace GigaChad_Corp_Usermanager {
 
         private void PopulateSearchBoxItems() {
             ComboBox[] searchModeBoxes = [EmployeeSearchModeBox, DepartmentSearchModeBox, ProjectSearchModeBox];
-
             // Get the list of enum values along with their descriptions
             var values = Enum.GetValues(typeof(SearchMode))
                 .Cast<Enum>()
@@ -57,17 +55,8 @@ namespace GigaChad_Corp_Usermanager {
             }
         }
 
-        private void GetTableData(string query) {
-            DataTable? dataTable = dbConnector.ExecuteTable(query);
-            if (dataTable == null) {
-                Trace.WriteLine("Got null, returning");
-                return;
-            }
-            EmployeeResultDataGrid.ItemsSource = dataTable.DefaultView;
-        }
-
-        private DataTable? GetEmployeeData(string searchString) {
-            SearchMode searchMode = (SearchMode)EmployeeSearchModeBox.SelectedValue;
+        private DataTable? GetDataTable(string searchString, ComboBox searchModeBox) {
+            SearchMode searchMode = (SearchMode)searchModeBox.SelectedValue;
             switch (searchMode) {
                 case SearchMode.ExactMatch:
                     break;
@@ -78,25 +67,34 @@ namespace GigaChad_Corp_Usermanager {
                     searchString = '%' + searchString + '%';
                     break;
             }
-            string query = "SELECT * FROM employee WHERE ";
-            for (int i = 0; i < tablesColumns["employee"].Count; i++) {
-                query += $"{tablesColumns["employee"][i]} LIKE '{searchString}'";
-                if (i < tablesColumns["employee"].Count - 1) {
+            int selectedMenuIndex = MenuTabPanel.SelectedIndex;
+            string tableName = tables[selectedMenuIndex];
+            string query = $"SELECT * FROM {tableName} WHERE ";
+            for (int i = 0; i < tablesColumns[tableName].Count; i++) {
+                query += $"{tablesColumns[tableName][i]} LIKE '{searchString}'";
+                if (i < tablesColumns[tableName].Count - 1) {
                     query += " OR ";
                 }
             }
-            //DataTable? dataTable = dbConnector.ExecuteTable(query);
-            return null;
+            Trace.WriteLine($"Executing query: {query}");
+            return dbConnector.ExecuteTable(query);
         }
 
         private void SearchBox_TextChanged(object sender, EventArgs e) {
             TextBox searchBox = (TextBox)sender;
             string searchString = searchBox.Text.Replace("%", "");
-            //switch (searchBox.Name) {
-            //    case "EmployeeSearchBox": EmployeeResultDataGrid.ItemsSource = GetEmployeeData(searchString)!.DefaultView;
-            //        break;
-            //    case "DepartmentSearchBox": 
-            //}
+            DataTable? dataTable = null;
+            switch (searchBox.Name) {
+                case "EmployeeSearchBox":
+                    EmployeeResultDataGrid.ItemsSource = GetDataTable(searchString, EmployeeSearchModeBox)!.DefaultView;
+                    break;
+                case "DepartmentSearchBox":
+                    DepartmentResultDataGrid.ItemsSource = GetDataTable(searchString, DepartmentSearchModeBox)!.DefaultView;
+                    break;
+                case "ProjectSearchBox":
+                    ProjectResultDataGrid.ItemsSource = GetDataTable(searchString, ProjectSearchModeBox)!.DefaultView;
+                    break;
+            }
             Trace.WriteLine(EmployeeSearchModeBox.SelectedValue);
             Trace.WriteLine($"Event args: {e}");
             Trace.WriteLine($"Text changed: {searchBox.Name} - {searchBox.Text}");

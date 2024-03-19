@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="GigaChad Corp Managing Tool" Height="600" Width="900">
     <Grid x:Name="MainGrid" Margin="15">
-        <TabControl Grid.Row="0" Grid.Column="0" x:Name="TableMenu" Margin="5,10">
+        <TabControl Grid.Row="0" Grid.Column="0" x:Name="MenuTabPanel" Margin="5,10">
             <!-- Employee Tab -->
             <TabItem x:Name="EmployeeMenu" Header="Mitarbeiter">
                 <Grid Margin="5">
@@ -35,7 +35,7 @@
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="DepartmentSearchBox" Margin="5"/>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="DepartmentSearchBox" TextChanged="SearchBox_TextChanged" Margin="5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1" x:Name="DepartmentSearchModeBox" Margin="5,0,5,5" Width="150"/>
                     <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DepartmentResultDataGrid" Margin="0,5,0,0"/>
                 </Grid>
@@ -51,7 +51,7 @@
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="ProjectSearchBox" Margin="5"/>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="ProjectSearchBox" TextChanged="SearchBox_TextChanged" Margin="5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ProjectSearchModeBox" Margin="5,0,5,5" Width="150"/>
                     <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ProjectResultDataGrid" Margin="0,5,0,0"/>
                 </Grid>
