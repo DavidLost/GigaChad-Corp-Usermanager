@@ -5,7 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GigaChad_Corp_Usermanager"
         mc:Ignorable="d"
-        Title="GigaChad Corp Managing Tool" Height="600" Width="900">
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="GigaChad Corp Benutzerverwaltung" Width="900" Height="600">
     <Grid x:Name="MainGrid" Margin="15">
         <TabControl Grid.Row="0" Grid.Column="0" x:Name="MenuTabPanel" Margin="5,10">
             <!-- Employee Tab -->
