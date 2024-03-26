@@ -5,7 +5,6 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace GigaChad_Corp_Usermanager {
-
     internal class DBConnector {
 
         public const string DEFAULT_SERVER = "localhost";
@@ -70,7 +69,9 @@ namespace GigaChad_Corp_Usermanager {
             return table;
         }
 
-
+        public bool UpdateData() {
+            return true;
+        }
 
         public static long GetDataTableSizeInBytes(DataTable dataTable) {
             #pragma warning disable SYSLIB0011

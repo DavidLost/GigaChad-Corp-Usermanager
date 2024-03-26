@@ -5,16 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GigaChad_Corp_Usermanager"
         mc:Ignorable="d"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
         Title="GigaChad Corp Benutzerverwaltung" Width="900" Height="600">
     <Grid x:Name="MainGrid" Margin="15">
-        <TabControl Grid.Row="0" Grid.Column="0" x:Name="MenuTabPanel" Margin="5,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ComboBox Grid.Row="0" Grid.Column="0" x:Name="UserSelectBox" Margin="5,0,5,5" Width="150" HorizontalAlignment="Right"/>
+        <TabControl Grid.Row="1" Grid.Column="0" x:Name="MenuTabPanel" Margin="5,10">
             <!-- Employee Tab -->
             <TabItem x:Name="EmployeeMenu" Header="Mitarbeiter">
                 <Grid Margin="5">
@@ -61,6 +59,21 @@
                     <TextBox Grid.Row="0" Grid.Column="0" x:Name="ProjectSearchBox" TextChanged="SearchBox_TextChanged" Margin="5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ProjectSearchModeBox" Margin="5,0,5,5" Width="150"/>
                     <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ProjectResultDataGrid" Margin="0,5,0,0"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="ProjectAssignmentMenu" Header="Projektzuordnung">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="ProjectAssignmentSearchBox" TextChanged="SearchBox_TextChanged" Margin="5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ProjectAssignmentSearchModeBox" Margin="5,0,5,5" Width="150"/>
+                    <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ProjectAssignmentResultDataGrid" Margin="0,5,0,0"/>
                 </Grid>
             </TabItem>
         </TabControl>

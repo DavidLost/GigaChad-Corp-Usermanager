@@ -11,22 +11,23 @@ namespace GigaChad_Corp_Usermanager {
 
         private DBConnector dbConnector;
         private readonly string databaseName = "gigachadcorp";
-        private readonly string[] tables = ["employee", "department", "project"];
-        private readonly Dictionary<string, List<string>> tablesColumns = [];
+        private readonly string[] tables = { "employee", "department", "project" };
+        private 
+        private readonly Dictionary<string, List<string>> tablesColumns = new();
+        private readonly Dictionary<UserType, List<TableColumnPermission>> userPermissions = new();
 
         public MainWindow() {
             InitializeComponent();
             DataContext = this;
+            PopulateUserSelectBoxItems();
             PopulateSearchBoxItems();
             dbConnector = new DBConnector("admin", "admin", databaseName);
-            dbConnector.Open();
             Trace.WriteLine($"Tried to open connection. Success was: {dbConnector.IsConnectionAlive()}");
             GetTablesColumns();
-            // PrintTableColumns();
         }
 
         public static string GetEnumDescription(Enum value) {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
+            FieldInfo fi = value.GetType().GetField(value.ToString())!;
             DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             if (attributes != null && attributes.Length > 0) {
                 return attributes[0].Description;
@@ -36,22 +37,78 @@ namespace GigaChad_Corp_Usermanager {
             }   
         }
 
+        private void CreateUserPermissions() {
+            userPermissions.Add(UserType.Employee, new List<TableColumnPermission> {
+                new TableColumnPermission("employee") {
+                    ViewableColumns = new List<string> { "emp_num", "name", "forename", "mail", "department_name" },
+                    EditableColumns = new List<string> { }
+                },
+                new TableColumnPermission("department") {
+                    ViewableColumns = new List<string> { "name", "room_num" },
+                    EditableColumns = new List<string> { }
+                },
+                new TableColumnPermission("project") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                },
+                new TableColumnPermission("employee_project") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                }
+            });
+            userPermissions.Add(UserType.Manager, new List<TableColumnPermission> {
+                new TableColumnPermission("employee") {
+                    ViewableColumns = new List<string> { "emp_num", "name", "forename", "mail", "department_name" },
+                    EditableColumns = new List<string> { }
+                },
+                new TableColumnPermission("department") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                },
+                new TableColumnPermission("project") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                }
+            });
+            userPermissions.Add(UserType.Admin, new List<TableColumnPermission> {
+                new TableColumnPermission("employee") {
+                    ViewableColumns = new List<string> { "emp_num", "name", "forename", "mail", "department_name" },
+                    EditableColumns = new List<string> { }
+                },
+                new TableColumnPermission("department") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                },
+                new TableColumnPermission("project") {
+                    ViewableColumns = new List<string> { "Column1", "Column2" },
+                    EditableColumns = new List<string> { "Column1" }
+                }
+            });
+        }
+
+        private void PopulateUserSelectBoxItems() {
+            ComboBox[] userSelectBoxes = { UserSelectBox };
+            PopulateComboBoxItems(userSelectBoxes, typeof(UserType), UserType.Employee);
+        }
+
         private void PopulateSearchBoxItems() {
-            ComboBox[] searchModeBoxes = [EmployeeSearchModeBox, DepartmentSearchModeBox, ProjectSearchModeBox];
-            // Get the list of enum values along with their descriptions
-            var values = Enum.GetValues(typeof(SearchMode))
+            ComboBox[] searchModeBoxes = { EmployeeSearchModeBox, DepartmentSearchModeBox, ProjectSearchModeBox };
+            PopulateComboBoxItems(searchModeBoxes, typeof(SearchMode), SearchMode.ExactMatch);
+        }
+
+        private void PopulateComboBoxItems(ComboBox[] boxes, Type enumClass, object defaultValue) {
+            var values = Enum.GetValues(enumClass)
                 .Cast<Enum>()
                 .Select(value => new {
                     Description = GetEnumDescription(value),
                     Value = value
                 }).ToList();
 
-            // Configure each ComboBox with the enum values and descriptions
-            foreach (var searchModeBox in searchModeBoxes) {
-                searchModeBox.ItemsSource = values; // Set the items source to the list of values
-                searchModeBox.DisplayMemberPath = "Description"; // Display the Description property in the ComboBox
-                searchModeBox.SelectedValuePath = "Value"; // Use the Value property as the actual value of the items
-                searchModeBox.SelectedValue = SearchMode.ExactMatch; // Set the default selected value
+            foreach (var box in boxes) {
+                box.ItemsSource = values;
+                box.DisplayMemberPath = "Description";
+                box.SelectedValuePath = "Value";
+                box.SelectedValue = defaultValue;
             }
         }
 
@@ -70,7 +127,7 @@ namespace GigaChad_Corp_Usermanager {
             int selectedMenuIndex = MenuTabPanel.SelectedIndex;
             string tableName = tables[selectedMenuIndex];
             string query = $"SELECT * FROM {tableName} WHERE ";
-            string[] ignoredColumns = []; //"id" Add columns that should be excluded from the search
+            string[] ignoredColumns = { }; //"id" Add columns that should be excluded from the search
             for (int i = 0; i < tablesColumns[tableName].Count; i++) {
                 string column = tablesColumns[tableName][i];
                 if (ignoredColumns.Contains(column)) continue;
@@ -83,10 +140,24 @@ namespace GigaChad_Corp_Usermanager {
             return dbConnector.ExecuteTable(query);
         }
 
+        private DataTable? GetEmployeeData() {
+            
+            return null;
+        }
+
+        private void OnSearchParametersChanged(object sender, EventArgs e) {
+            if (sender is TextBox searchTextBox) {
+
+            }
+            else if (sender is ComboBox searchModeBox) {
+
+            }
+            
+        }
+
         private void SearchBox_TextChanged(object sender, EventArgs e) {
             TextBox searchBox = (TextBox)sender;
             string searchString = searchBox.Text.Replace("%", "");
-            DataTable? dataTable = null;
             switch (searchBox.Name) {
                 case "EmployeeSearchBox":
                     EmployeeResultDataGrid.ItemsSource = GetDataTable(searchString, EmployeeSearchModeBox)!.DefaultView;
@@ -101,27 +172,8 @@ namespace GigaChad_Corp_Usermanager {
             Trace.WriteLine(EmployeeSearchModeBox.SelectedValue);
             Trace.WriteLine($"Event args: {e}");
             Trace.WriteLine($"Text changed: {searchBox.Name} - {searchBox.Text}");
-            //var searchString = EmployeeSearchBox.Text.Replace('*', '%');
-            //string query = "SELECT * FROM employee WHERE ";
-            //for (int i = 0; i < tablesColumns["employee"].Count; i++) {
-            //    query += $"{tablesColumns["employee"][i]} LIKE '{searchString}'";
-            //    if (i < tablesColumns["employee"].Count - 1) {
-            //        query += " OR ";
-            //    }
-            //}
-            //Trace.WriteLine(query);
-            //GetTableData(query);
         }
-        //private void PrintTableColumns() {
-        //    foreach (var table in tablesColumns) {
-        //        Trace.WriteLine($"Table: {table.Key}");
-        //        Trace.WriteLine("Columns:");
-        //        foreach (var column in table.Value) {
-        //            Trace.WriteLine($"- {column}");
-        //        }
-        //        Trace.WriteLine(""); // Adds an empty line for better readability
-        //    }
-        //}
+
         private void GetTablesColumns() {
             foreach (string table in tables) {
                 string query = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table}';";
