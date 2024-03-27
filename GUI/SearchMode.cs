@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 
-namespace GigaChad_Corp_Usermanager {
-    public enum SearchMode {
+namespace GigaChad_Corp_Usermanager.GUI
+{
+    public enum SearchMode
+    {
         [Description("Ist gleich")]
         ExactMatch,
 

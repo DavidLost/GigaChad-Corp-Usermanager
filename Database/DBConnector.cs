@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace GigaChad_Corp_Usermanager {
-    internal class DBConnector {
+namespace GigaChad_Corp_Usermanager.MySQL
+{
+    internal class DBConnector
+    {
 
         public const string DEFAULT_SERVER = "localhost";
         public const int DEFAULT_PORT = 3306;
@@ -15,47 +17,60 @@ namespace GigaChad_Corp_Usermanager {
         public long LastDataTableSize { get; private set; } = 0;
 
         private readonly MySqlConnection connection;
-        public DBConnector(MySqlConnection connection) {
+        public DBConnector(MySqlConnection connection)
+        {
             this.connection = connection;
             if (OPEN_ON_CREATE) Open();
         }
         public DBConnector(string connectionString) : this(new MySqlConnection(connectionString + ";Charset=latin1")) { }
         public DBConnector(string server, int port, string user, string password, string database) :
-            this($"server={server};port={port};userid={user};password={password};database={database}") { }
+            this($"server={server};port={port};userid={user};password={password};database={database}")
+        { }
 
-        public DBConnector(string user, string password, string database) : this(DEFAULT_SERVER, DEFAULT_PORT, user, password, database) {
+        public DBConnector(string user, string password, string database) : this(DEFAULT_SERVER, DEFAULT_PORT, user, password, database)
+        {
             Trace.WriteLine($"INFO - MySQL-Connection using default value for server={DEFAULT_SERVER} and port={DEFAULT_PORT}");
         }
-        public bool IsConnectionAlive() {
-            try {
+        public bool IsConnectionAlive()
+        {
+            try
+            {
                 if (connection.Ping()) return true;
             }
             catch { }
             return false;
         }
 
-        public void Open() {
-            if (!IsConnectionAlive()) {
-                try {
+        public void Open()
+        {
+            if (!IsConnectionAlive())
+            {
+                try
+                {
                     connection.Open();
                     Trace.WriteLine("INFO - Database connection sucessfully opend!");
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     Trace.TraceError("ERROR - Can't connect to database!" + ex.Message);
                 }
             }
         }
-        public void Close() {
-            if (IsConnectionAlive()) {
+        public void Close()
+        {
+            if (IsConnectionAlive())
+            {
                 connection.Close();
             }
         }
-        public MySqlDataReader? Execute(string queryString) {
+        public MySqlDataReader? Execute(string queryString)
+        {
             Trace.WriteLine(IsConnectionAlive());
             if (!IsConnectionAlive() || queryString == null) return null;
             return new MySqlCommand(queryString, connection).ExecuteReader();
         }
-        public DataTable? ExecuteTable(string queryString) {
+        public DataTable? ExecuteTable(string queryString)
+        {
             Stopwatch.Restart();
             var reader = Execute(queryString);
             if (reader == null) return null;
@@ -69,19 +84,22 @@ namespace GigaChad_Corp_Usermanager {
             return table;
         }
 
-        public bool UpdateData() {
+        public bool UpdateData()
+        {
             return true;
         }
 
-        public static long GetDataTableSizeInBytes(DataTable dataTable) {
-            #pragma warning disable SYSLIB0011
+        public static long GetDataTableSizeInBytes(DataTable dataTable)
+        {
+#pragma warning disable SYSLIB0011
             long sizeInBytes = 0;
             var binaryFormatter = new BinaryFormatter();
-            using (var ms = new MemoryStream()) {
+            using (var ms = new MemoryStream())
+            {
                 binaryFormatter.Serialize(ms, dataTable);
                 sizeInBytes = ms.Length;
             }
-            #pragma warning restore SYSLIB0011
+#pragma warning restore SYSLIB0011
             return sizeInBytes;
         }
     }
