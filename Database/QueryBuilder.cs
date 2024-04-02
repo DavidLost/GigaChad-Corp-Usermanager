@@ -15,10 +15,6 @@ namespace GigaChad_Corp_Usermanager.Database {
         private static readonly PermissionsManager permissionManager = new();
 
         public static string BuildQuery(UserType userType, SearchMode searchMode, int tableIndex, string searchString) {
-            Trace.WriteLine(userType);
-            Trace.WriteLine(searchMode);
-            Trace.WriteLine(tableIndex);
-            Trace.WriteLine(searchString);
             string tableName = tables[tableIndex];
             string[] columns = permissionManager.GetViewableColumns(userType, tableName);
             string[] columnAliases = permissionManager.GetColumnDisplayNames(userType, tableName);

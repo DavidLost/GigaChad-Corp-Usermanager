@@ -5,14 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GigaChad_Corp_Usermanager"
         mc:Ignorable="d"
-        Title="GigaChad Corp Benutzerverwaltung" Width="900" Height="600">
+        Title="GigaChad Corp Benutzerverwaltung" Width="1200" Height="900">
     <Grid x:Name="MainGrid" Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ComboBox Grid.Row="0" Grid.Column="0" x:Name="UserSelectBox" SelectionChanged="OnSearchParametersChanged" Margin="5,0,5,5" Width="150" HorizontalAlignment="Right"/>
-        <TabControl Grid.Row="1" Grid.Column="0" x:Name="MenuTabPanel" Margin="5,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ComboBox Grid.Row="0" Grid.Column="2" x:Name="UserSelectBox" SelectionChanged="OnSearchParametersChanged" Margin="5,0,5,5" Width="150"/>
+        <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="MenuTabPanel" Margin="5,10">
             <!-- Employee Tab -->
             <TabItem x:Name="EmployeeMenu" Header="Mitarbeiter">
                 <Grid Margin="5">
@@ -77,5 +83,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Button Grid.Row="2" Grid.Column="1" x:Name="SaveChangesButton" Click="OnSaveButtonClick" Width="200">Änderungen speichern</Button>
+        <Button Grid.Row="2" Grid.Column="2" x:Name="ExportJsonButton" Click="OnExportButtonClick" Width="200">Json Exportieren</Button>
     </Grid>
 </Window>

@@ -6,6 +6,9 @@ using System.ComponentModel;
 using System.Reflection;
 using GigaChad_Corp_Usermanager.MySQL;
 using GigaChad_Corp_Usermanager.Database;
+using Newtonsoft.Json;
+using Microsoft.Win32;
+using System.IO;
 
 namespace GigaChad_Corp_Usermanager.GUI
 {
@@ -27,6 +30,9 @@ namespace GigaChad_Corp_Usermanager.GUI
             PopulateSearchBoxItems();
             dbConnector = new DBConnector("admin", "admin", databaseName);
             Trace.WriteLine($"Tried to open connection. Success was: {dbConnector.IsConnectionAlive()}");
+            for (int i = 0; i < resultGrids.Length; i++) {
+                UpdateDataGrid(i);
+            }
         }
 
         public static string GetEnumDescription(Enum value) {
@@ -38,14 +44,6 @@ namespace GigaChad_Corp_Usermanager.GUI
             else {
                 return value.ToString();
             }   
-        }
-
-        private void PopulateUserSelectBoxItems() {
-            PopulateComboBoxItems(new ComboBox[] { UserSelectBox }, typeof(UserType), UserType.Employee);
-        }
-
-        private void PopulateSearchBoxItems() {
-            PopulateComboBoxItems(searchModeBoxes, typeof(SearchMode), SearchMode.ExactMatch);
         }
 
         private void PopulateComboBoxItems(ComboBox[] boxes, Type enumClass, object defaultValue) {
@@ -64,6 +62,14 @@ namespace GigaChad_Corp_Usermanager.GUI
             }
         }
 
+        private void PopulateUserSelectBoxItems() {
+            PopulateComboBoxItems(new ComboBox[] { UserSelectBox }, typeof(UserType), UserType.Employee);
+        }
+
+        private void PopulateSearchBoxItems() {
+            PopulateComboBoxItems(searchModeBoxes, typeof(SearchMode), SearchMode.Contains);
+        }
+
         private DataTable? GetDataTable(int selectedMenuIndex) {
             if (selectedMenuIndex < 0 || selectedMenuIndex >= resultGrids.Length) {  return null; }
             UserType userType = (UserType)UserSelectBox.SelectedValue;
@@ -73,15 +79,79 @@ namespace GigaChad_Corp_Usermanager.GUI
             return dbConnector.ExecuteTable(query);
         }
 
-        private DataTable? GetEmployeeData() {
+        private DataTable? GetDataTableFromDataGrid(DataGrid dataGrid) {
+            if (dataGrid.ItemsSource is DataView dataView) {
+                return dataView.Table;
+            }
+            else if (dataGrid.ItemsSource is DataTable dataTable) {
+                return dataTable;
+            }
             return null;
         }
 
-        private void OnSearchParametersChanged(object sender, EventArgs e) {
-            int index = MenuTabPanel.SelectedIndex;
+        private string ToFormattedString(DataTable dataTable) {
+            int columnPadding = 2;
+            // Since .PadRight() is used, it is important to use a monospaced font for the formatting to work right!
+            int[] maxLengths = new int[dataTable.Columns.Count];
+            for (int i = 0; i < dataTable.Columns.Count; i++) {
+                maxLengths[i] = dataTable.Columns[i].ColumnName.Length;
+                foreach (DataRow row in dataTable.Rows) {
+                    if (row[i] == null) continue;
+                    maxLengths[i] = Math.Max(maxLengths[i], row[i].ToString()!.Length);
+                }
+            }
+            string header = "";
+            for (int i = 0; i < dataTable.Columns.Count; i++) {
+                header += dataTable.Columns[i].ColumnName.PadRight(maxLengths[i] + columnPadding);
+            }
+            string divider = new string('-', maxLengths.Sum() + (maxLengths.Length - 1) * columnPadding);
+            var rows = new List<string>();
+            foreach (DataRow row in dataTable.Rows) {
+                string currentRow = "";
+                for (int i = 0; i < dataTable.Columns.Count; i++) {
+                    if (row[i] == null) continue;
+                    currentRow += row[i].ToString()!.PadRight(maxLengths[i] + columnPadding);
+                }
+                rows.Add(currentRow);
+            }
+            return header + "\n" + divider + "\n" + string.Join("\n", rows);
+        }
+
+        public void OnExportButtonClick(object sender, EventArgs e) {
+            DataTable? dataTable = GetDataTableFromDataGrid(resultGrids[MenuTabPanel.SelectedIndex]);
+            if (dataTable == null) return;
+            SaveDataTableToJsonFile(dataTable);
+        }
+
+        public void OnSaveButtonClick(object sender, EventArgs e) {
+            DataTable? dataTable = GetDataTableFromDataGrid(resultGrids[MenuTabPanel.SelectedIndex]);
+            if (dataTable == null) return;
+            Trace.WriteLine(ToFormattedString(dataTable));
+        }
+
+        public void SaveDataTableToJsonFile(DataTable dataTable) {
+            string jsonString = JsonConvert.SerializeObject(dataTable, Formatting.Indented);
+            SaveFileDialog saveFileDialog = new() {
+                Filter = "JSON Datei (*.json)|*.json|Alle Dateien (*.*)|*.*",
+                Title = "Als Json speichern"
+            };
+            bool? result = saveFileDialog.ShowDialog();
+            if (result == null) return;
+            if ((bool)result) {
+                if (!string.IsNullOrWhiteSpace(saveFileDialog.FileName)) {
+                    File.WriteAllText(saveFileDialog.FileName, jsonString);
+                }
+            }
+        }
+
+        private void UpdateDataGrid(int index) {
             DataTable? dataTable = GetDataTable(index);
             if (dataTable == null) return;
             resultGrids[index].ItemsSource = dataTable.DefaultView;
+        }
+
+        private void OnSearchParametersChanged(object sender, EventArgs e) {
+            UpdateDataGrid(MenuTabPanel.SelectedIndex);
         }
 
     }

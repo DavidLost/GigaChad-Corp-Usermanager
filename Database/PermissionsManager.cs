@@ -12,8 +12,8 @@ namespace GigaChad_Corp_Usermanager.Database {
         private void RegisterUserPermissions() {
             userPermissions.Add(UserType.Employee, new List<TableColumnPermission> {
                 new TableColumnPermission("employee",
-                    new[] { "emp_num", "name", "forename", "mail", "department.name" },
-                    new[] { "Personalnummer", "Name", "Vorname", "Mail", "Abteilung" },
+                    new[] { "name", "forename", "mail", "department.name" },
+                    new[] { "Name", "Vorname", "Mail", "Abteilung" },
                     new string[] {}),
                 new TableColumnPermission("department",
                     new[] { "name", "room_num" },
@@ -24,14 +24,14 @@ namespace GigaChad_Corp_Usermanager.Database {
                     new[] { "Projektname" },
                     new string[] {}),
                 new TableColumnPermission("employee_project",
-                    new[] { "employee.emp_num", "employee.name", "employee.forename", "project.name", "task" },
-                    new[] { "Personalnummer", "'Mitarbeiter Name'", "'Mitarbeiter Vorname'", "Projektname", "Aufgabe" },
+                    new[] { "employee.name", "employee.forename", "project.name" },
+                    new[] { "'Mitarbeiter Name'", "'Mitarbeiter Vorname'", "Projektname" },
                     new string[] {})
             });
             userPermissions.Add(UserType.Manager, new List<TableColumnPermission> {
                 new TableColumnPermission("employee",
-                    new[] { "emp_num", "name", "forename", "mail", "department.name" },
-                    new[] { "Personalnummer", "Name", "Vorname", "Mail", "Abteilung" },
+                    new[] { "emp_num", "name", "forename", "mail", "department.name", "postcode", "streetname", "housenumber"},
+                    new[] { "Personalnummer", "Name", "Vorname", "Mail", "Abteilung", "PLZ", "Straße", "Hausnummer" },
                     new string[] {}),
                 new TableColumnPermission("department",
                     new[] { "name", "room_num" },
@@ -48,8 +48,8 @@ namespace GigaChad_Corp_Usermanager.Database {
             });
             userPermissions.Add(UserType.Admin, new List<TableColumnPermission> {
                 new TableColumnPermission("employee",
-                    new[] { "id", "emp_num", "name", "forename", "mail", "department.name" },
-                    new[] { "ID", "Personalnummer", "Name", "Vorname", "Mail", "Abteilung" },
+                    new[] { "id", "emp_num", "name", "forename", "mail", "department.name", "postcode", "streetname", "housenumber"},
+                    new[] { "ID", "Personalnummer", "Name", "Vorname", "Mail", "Abteilung", "PLZ", "Straße", "Hausnummer" },
                     new string[] {}),
                 new TableColumnPermission("department",
                     new[] { "id", "name", "room_num" },
@@ -60,8 +60,8 @@ namespace GigaChad_Corp_Usermanager.Database {
                     new[] { "ID", "Projektname" },
                     new string[] {}),
                 new TableColumnPermission("employee_project",
-                    new[] { "employee.emp_num", "employee.name", "employee.forename", "project.name", "task" },
-                    new[] { "Personalnummer", "'Mitarbeiter Name'", "'Mitarbeiter Vorname'", "Projektname", "Aufgabe" },
+                    new[] { "project.name", "task", "employee.emp_num", "employee.name", "employee.forename" },
+                    new[] { "Projektname", "Aufgabe", "Personalnummer", "'Mitarbeiter Name'", "'Mitarbeiter Vorname'"},
                     new string[] {})
             });
         }
