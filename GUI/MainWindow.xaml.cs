@@ -80,6 +80,7 @@ namespace GigaChad_Corp_Usermanager.GUI
         }
 
         private DataTable? GetDataTableFromDataGrid(DataGrid dataGrid) {
+            dataGrid.CommitEdit();
             if (dataGrid.ItemsSource is DataView dataView) {
                 return dataView.Table;
             }
@@ -104,7 +105,7 @@ namespace GigaChad_Corp_Usermanager.GUI
             for (int i = 0; i < dataTable.Columns.Count; i++) {
                 header += dataTable.Columns[i].ColumnName.PadRight(maxLengths[i] + columnPadding);
             }
-            string divider = new string('-', maxLengths.Sum() + (maxLengths.Length - 1) * columnPadding);
+            string divider = new('-', maxLengths.Sum() + (maxLengths.Length - 1) * columnPadding);
             var rows = new List<string>();
             foreach (DataRow row in dataTable.Rows) {
                 string currentRow = "";
@@ -133,7 +134,8 @@ namespace GigaChad_Corp_Usermanager.GUI
             string jsonString = JsonConvert.SerializeObject(dataTable, Formatting.Indented);
             SaveFileDialog saveFileDialog = new() {
                 Filter = "JSON Datei (*.json)|*.json|Alle Dateien (*.*)|*.*",
-                Title = "Als Json speichern"
+                Title = "Als Json speichern",
+                FileName = $"db_export_{DateTime.Now.ToString("yyyy-MM-dd")}.json"
             };
             bool? result = saveFileDialog.ShowDialog();
             if (result == null) return;
@@ -148,6 +150,18 @@ namespace GigaChad_Corp_Usermanager.GUI
             DataTable? dataTable = GetDataTable(index);
             if (dataTable == null) return;
             resultGrids[index].ItemsSource = dataTable.DefaultView;
+        }
+
+        private void ChangeDataEditability(bool allowed) {
+            SaveChangesButton.IsEnabled = allowed;
+            foreach (var grid in resultGrids) {
+                grid.IsReadOnly = !allowed;
+            }
+        }
+
+        private void OnUserTypeChanged(object sender, EventArgs e) {
+            ChangeDataEditability((UserType)UserSelectBox.SelectedValue != UserType.Employee);
+            OnSearchParametersChanged(sender, e);
         }
 
         private void OnSearchParametersChanged(object sender, EventArgs e) {

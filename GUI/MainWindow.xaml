@@ -17,7 +17,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ComboBox Grid.Row="0" Grid.Column="2" x:Name="UserSelectBox" SelectionChanged="OnSearchParametersChanged" Margin="5,0,5,5" Width="150"/>
+        <ComboBox Grid.Row="0" Grid.Column="2" x:Name="UserSelectBox" SelectionChanged="OnUserTypeChanged" Margin="5,0,5,5" Width="150"/>
         <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="MenuTabPanel" Margin="5,10">
             <!-- Employee Tab -->
             <TabItem x:Name="EmployeeMenu" Header="Mitarbeiter">
